@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student report | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/admin}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Head teacher workspace</small></span>
+    </a>
+    <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">STUDENT REPORT</p>
+        <h1 th:text="${student.fullName}">Student name</h1>
+        <p class="muted">Admission number <span th:text="${student.studentCode}">B/001/26</span>
+            | <span th:text="${student.grade}">Grade</span></p>
+        <a class="button secondary" th:href="@{/head-teacher/students}">Back to search</a>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">ACADEMICS</p><h2>Academic report</h2></div></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Term</th><th>Subject</th><th>Score</th><th>Teacher comment</th></tr></thead>
+                <tbody>
+                <tr th:each="record : ${records}">
+                    <td th:text="${record.term}">Term</td>
+                    <td th:text="${record.subject}">Subject</td>
+                    <td th:text="${record.score + '%'}">0%</td>
+                    <td th:text="${record.teacherComment}">Comment</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(records)}"><td colspan="4" class="empty">No academic records yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">FEES</p><h2>Fee report</h2></div></div>
+        <div class="stats-grid fee-grid" th:if="${feeAccount != null}">
+            <article class="stat-card"><span>Total fees</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.totalFees, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+            <article class="stat-card"><span>Paid</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.amountPaid, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+            <article class="stat-card balance"><span>Balance</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.balance, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+        </div>
+        <p class="empty" th:if="${feeAccount == null}">No fee account is registered for this student.</p>
+        <div class="table-wrap" th:if="${feeAccount != null}">
+            <table>
+                <thead><tr><th>Date</th><th>Reference</th><th>Amount</th><th>Mode</th></tr></thead>
+                <tbody>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${#temporals.format(payment.createdAt, 'dd MMM yyyy, HH:mm')}">Date</td>
+                    <td th:text="${payment.reference}">Reference</td>
+                    <td th:text="${'KES ' + #numbers.formatDecimal(payment.amount, 1, 'COMMA', 2, 'POINT')}">KES 0</td>
+                    <td>LOCAL PREVIEW</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(payments)}"><td colspan="4" class="empty">No payment history yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <p class="sample-warning">This portal displays sample records.</p>
+</main>
+</body>
+</html>

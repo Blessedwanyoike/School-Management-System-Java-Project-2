@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System logs | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>System logs</small></span>
+    </a>
+    <div class="account">
+        <a class="button outline" th:href="@{/modules}">Modules</a>
+        <a class="button outline" th:href="@{/reports}">Reports</a>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">AUDIT &amp; OPERATIONS</p>
+        <h1>Activity and system logs</h1>
+        <p class="muted">Showing the latest 200 school events. Failed sign-ins recorded: <strong th:text="${failedLogins}">0</strong>.</p>
+    </section>
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Recent activity</h2></div></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Date &amp; time</th><th>User</th><th>Action</th><th>Section</th><th>Details</th><th>IP address</th></tr></thead>
+                <tbody>
+                <tr th:each="entry : ${logs}">
+                    <td th:text="${#temporals.format(entry.createdAt, 'dd MMM yyyy, HH:mm:ss')}">Date</td>
+                    <td th:text="${entry.actor}">User</td>
+                    <td th:text="${entry.action}">Action</td>
+                    <td th:text="${entry.section}">Section</td>
+                    <td th:text="${entry.details}">Details</td>
+                    <td th:text="${entry.clientAddress != '' ? entry.clientAddress : '—'}">IP address</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(logs)}"><td colspan="6" class="empty">No activity has been logged yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <p class="sample-warning">Technical application logs are also written to <code>web-portal/logs/carol-academy.log</code>.</p>
+</main>
+</body>
+</html>

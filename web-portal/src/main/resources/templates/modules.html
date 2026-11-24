@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>School modules | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>School modules</small></span>
+    </a>
+    <div class="account">
+        <a class="button outline" th:href="@{/admin}">Administration</a>
+        <a class="button outline" th:href="@{/reports}">Reports</a>
+        <a class="button outline" th:href="@{/logs}">Logs</a>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">COMPLETE SCHOOL SYSTEM</p>
+        <h1>Departments and operations</h1>
+        <p class="muted"><span th:text="${totalRecords}">0</span> records saved across the modules.</p>
+    </section>
+    <section class="module-grid">
+        <article class="module-card" th:each="module : ${modules}">
+            <h2 class="module-card-title" th:text="${module.value}">Module</h2>
+            <a class="button primary module-card-link" th:href="@{/modules/{section}(section=${module.key})}">Open section</a>
+        </article>
+    </section>
+</main>
+</body>
+</html>

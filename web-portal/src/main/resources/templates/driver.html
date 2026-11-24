@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bus driver portal | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Bus driver portal</small></span>
+    </a>
+    <div class="account">
+        <span th:text="${displayName}">Driver</span>
+        <span class="role-badge">Bus driver</span>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">TRANSPORT</p>
+        <h1>Driver dashboard</h1>
+        <p class="muted">View your assigned bus and record your duty times.</p>
+    </section>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+    <section class="panel bus-card">
+        <div>
+            <p class="eyebrow">ASSIGNED BUS</p>
+            <h2 th:text="${bus.registration}">Registration</h2>
+            <p><strong>Bus ID:</strong> <span th:text="${bus.busCode}">BU-001</span></p>
+            <p><strong>Route:</strong> <span th:text="${bus.route}">Route</span></p>
+            <p><strong>Bus status:</strong> <span class="status" th:text="${bus.active ? 'Active' : 'Inactive'}">Active</span></p>
+        </div>
+        <div class="time-grid">
+            <div><span>Check-in</span><strong th:text="${bus.checkIn != null ? #temporals.format(bus.checkIn, 'HH:mm') : 'Not recorded'}">—</strong></div>
+            <div><span>Check-out</span><strong th:text="${bus.checkOut != null ? #temporals.format(bus.checkOut, 'HH:mm') : 'Not recorded'}">—</strong></div>
+        </div>
+        <div class="button-row">
+            <form th:action="@{/driver/check-in}" method="post"><button class="button primary" type="submit">Check in now</button></form>
+            <form th:action="@{/driver/check-out}" method="post"><button class="button secondary" type="submit">Check out now</button></form>
+        </div>
+    </section>
+    <p class="sample-warning">Check-in actions are stored in the local portal database.</p>
+</main>
+</body>
+</html>

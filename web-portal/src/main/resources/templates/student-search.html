@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student search | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/admin}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Head teacher workspace</small></span>
+    </a>
+    <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">STUDENT RECORDS</p>
+        <h1>Search students</h1>
+        <p class="muted">Search by exact admission number or part of the student's name.</p>
+    </section>
+    <section class="panel">
+        <form class="search-form" th:action="@{/head-teacher/students}" method="get">
+            <label class="sr-only" for="student-search">Student name or admission number</label>
+            <input id="student-search" name="q" type="search" maxlength="100"
+                   placeholder="Name or admission number, e.g. B/001/26"
+                   th:value="${query}" required>
+            <button class="button primary" type="submit">Search</button>
+        </form>
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+        <p class="muted" th:if="${query != '' and error == null}"
+           th:text="${#lists.size(results)} + ' result(s), maximum 50 shown.'">0 results</p>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(results)}">
+            <table>
+                <thead><tr><th>Admission number</th><th>Student name</th><th>Grade</th><th>Report</th></tr></thead>
+                <tbody>
+                <tr th:each="student : ${results}">
+                    <td th:text="${student.studentCode}">B/001/26</td>
+                    <td th:text="${student.fullName}">Student name</td>
+                    <td th:text="${student.grade}">Grade</td>
+                    <td>
+                        <a class="button secondary"
+                           th:href="@{/head-teacher/students/report(admissionNumber=${student.studentCode})}">
+                            View reports
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="empty" th:if="${query != '' and error == null and #lists.isEmpty(results)}">
+            No students matched that search.
+        </p>
+    </section>
+</main>
+</body>
+</html>

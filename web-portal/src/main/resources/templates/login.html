@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+<main class="login-card">
+    <div class="brand brand-centered">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <div>
+            <h1>Carol Academy</h1>
+            <p>School portal</p>
+        </div>
+    </div>
+
+    <h2>Sign in to your portal</h2>
+    <p class="muted">Parents: enter your student's admission number as your username, for example B/001/26 or B/1500/26.</p>
+
+    <div class="alert error" th:if="${param.error}">Incorrect username or password.</div>
+    <div class="alert success" th:if="${param.logout}">You have signed out.</div>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+
+    <form th:action="@{/login}" method="post" class="form-stack">
+        <label for="username">Username or student admission number</label>
+        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="button primary full-width" type="submit">Sign in</button>
+    </form>
+
+    <p class="muted">Need a staff account? <a th:href="@{/signup}">Request sign-up</a>.
+        New staff accounts require administrator approval.</p>
+</main>
+</body>
+</html>

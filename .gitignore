@@ -1,0 +1,5 @@
+.build/
+web-portal/target/
+web-portal/data/*.mv.db
+web-portal/data/*.trace.db
+web-portal/logs/

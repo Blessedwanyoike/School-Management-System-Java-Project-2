@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff sign-up | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+<main class="login-card">
+    <div class="brand brand-centered">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <div><h1>Carol Academy</h1><p>Staff account request</p></div>
+    </div>
+    <h2>Request a staff account</h2>
+    <p class="muted">Sign-up is for teachers and bus drivers. An administrator must approve your request before you can sign in.</p>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+    <form th:action="@{/signup}" method="post" class="form-stack">
+        <label for="displayName">Full name</label>
+        <input id="displayName" name="displayName" type="text" maxlength="100" autocomplete="name" required>
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" minlength="3" maxlength="30"
+               pattern="[A-Za-z0-9._-]+" autocomplete="username" required>
+        <label for="role">Staff role</label>
+        <select id="role" name="role" required>
+            <option value="TEACHER">Teacher</option>
+            <option value="BUS_DRIVER">Bus driver</option>
+        </select>
+        <label for="subject">Subject (teachers only)</label>
+        <input id="subject" name="subject" type="text" maxlength="100">
+        <label for="password">Password (at least 10 characters)</label>
+        <input id="password" name="password" type="password" minlength="10" maxlength="72" autocomplete="new-password" required>
+        <label for="confirmPassword">Confirm password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password" required>
+        <button class="button primary full-width" type="submit">Request account</button>
+    </form>
+    <p class="muted"><a th:href="@{/login}">Return to sign in</a></p>
+</main>
+</body>
+</html>

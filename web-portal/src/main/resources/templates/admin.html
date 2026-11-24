@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administration | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Administration portal</small></span>
+    </a>
+    <div class="account">
+        <span th:text="${displayName}">Staff member</span>
+        <span class="role-badge" th:text="${roleName}">Role</span>
+        <a class="button outline" th:href="@{/logs}">Logs</a>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">STAFF WORKSPACE</p>
+        <h1>Welcome, <span th:text="${displayName}">Staff member</span></h1>
+        <p class="muted">School records and academic overview.</p>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card"><span>Students in portal</span><strong th:text="${studentCount}">0</strong></article>
+        <article class="stat-card"><span>Teacher accounts</span><strong th:text="${teacherCount}">0</strong></article>
+        <article class="stat-card"><span>Driver accounts</span><strong th:text="${driverCount}">0</strong></article>
+        <article class="stat-card"><span>Assigned buses</span><strong th:text="${busCount}">0</strong></article>
+    </section>
+
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">COMPLETE SCHOOL OPERATIONS</p><h2>Departments and reports</h2></div>
+        </div>
+        <div class="button-row">
+            <a class="button primary" th:href="@{/modules}">Open school modules</a>
+            <a class="button secondary" th:href="@{/reports}">Open reports &amp; analytics</a>
+            <a class="button outline" th:href="@{/bursar}">Open bursar workspace</a>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">ACCOUNT APPROVAL</p><h2>Pending staff sign-ups</h2></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Subject</th><th>Action</th></tr></thead>
+                <tbody>
+                <tr th:each="member : ${pendingStaffSignups}">
+                    <td th:text="${member.displayName}">Staff name</td>
+                    <td th:text="${member.username}">Username</td>
+                    <td th:text="${member.role == T(academy.carol.portal.domain.Role).TEACHER ? 'Teacher' : 'Bus driver'}">Role</td>
+                    <td th:text="${member.subject != null ? member.subject : '—'}">Subject</td>
+                    <td>
+                        <form th:action="@{/admin/users/approve}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <input type="hidden" name="userId" th:value="${member.id}">
+                            <button class="button primary" type="submit">Approve</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(pendingStaffSignups)}"><td colspan="5" class="empty">No pending staff sign-ups.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">SCHOOL FACILITIES</p><h2>Library, dormitory and kitchen status</h2></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Category</th><th>Location</th><th>Item</th><th>Expected</th><th>Present</th><th>Missing</th><th>Status</th><th>Notes</th><th>Update</th></tr></thead>
+                <tbody>
+                <tr th:each="asset : ${schoolAssets}">
+                    <td th:text="${asset.category}">Library</td>
+                    <td th:text="${asset.location}">Location</td>
+                    <td th:text="${asset.itemName}">Item</td>
+                    <td th:text="${asset.expectedQuantity}">0</td>
+                    <td th:text="${asset.presentQuantity}">0</td>
+                    <td th:text="${asset.missingQuantity}">0</td>
+                    <td th:text="${asset.status}">Status</td>
+                    <td th:text="${asset.notes}">Notes</td>
+                    <td>
+                        <form th:action="@{/admin/assets/update}" method="post" class="form-stack">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <input type="hidden" name="assetId" th:value="${asset.id}">
+                            <input type="number" name="expectedQuantity" min="0" th:value="${asset.expectedQuantity}" aria-label="Expected quantity">
+                            <input type="number" name="presentQuantity" min="0" th:value="${asset.presentQuantity}" aria-label="Present quantity">
+                            <input name="status" th:value="${asset.status}" maxlength="50" aria-label="Status">
+                            <input name="notes" th:value="${asset.notes}" maxlength="250" aria-label="Notes">
+                            <button class="button primary" type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(schoolAssets)}"><td colspan="9" class="empty">No facility records yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">BUS MAINTENANCE</p><h2>Service and broken-bus status</h2></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Bus</th><th>Registration</th><th>Route</th><th>Maintenance</th><th>Notes</th><th>Update</th></tr></thead>
+                <tbody>
+                <tr th:each="bus : ${busAssignments}">
+                    <td th:text="${bus.busCode}">BU-001</td>
+                    <td th:text="${bus.registration}">Registration</td>
+                    <td th:text="${bus.route}">Route</td>
+                    <td th:text="${bus.maintenanceStatus}">Serviceable</td>
+                    <td th:text="${bus.maintenanceNotes}">Notes</td>
+                    <td>
+                        <form th:action="@{/admin/buses/maintenance}" method="post" class="search-form">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <input type="hidden" name="busId" th:value="${bus.id}">
+                            <input name="status" th:value="${bus.maintenanceStatus}" maxlength="50" aria-label="Maintenance status">
+                            <input name="notes" th:value="${bus.maintenanceNotes}" maxlength="250" aria-label="Maintenance notes">
+                            <button class="button primary" type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">STUDENT LOOKUP</p><h2>Search academic and fee reports</h2></div>
+        </div>
+        <form class="search-form" th:action="@{/head-teacher/students}" method="get">
+            <label class="sr-only" for="student-search">Student name or admission number</label>
+            <input id="student-search" name="q" type="search" maxlength="100"
+                   placeholder="Name or admission number, e.g. B/001/26" required>
+            <button class="button primary" type="submit">Search students</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">STAFF DIRECTORY</p><h2>Teachers and bus drivers</h2></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Assignment</th></tr></thead>
+                <tbody>
+                <tr th:each="member : ${teachers}">
+                    <td th:text="${member.displayName}">Teacher name</td>
+                    <td th:text="${member.username}">teacher</td>
+                    <td>Teacher</td>
+                    <td th:text="${member.subject}">Subject</td>
+                </tr>
+                <tr th:each="member : ${drivers}">
+                    <td th:text="${member.displayName}">Driver name</td>
+                    <td th:text="${member.username}">driver</td>
+                    <td>Bus driver</td>
+                    <td th:text="${member.username == 'driver' ? 'BU-001 / CA-BUS-01' : 'Assigned bus'}">Bus assignment</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div><p class="eyebrow">ACADEMIC RECORDS</p><h2>Recent student progress</h2></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Student</th><th>Grade</th><th>Term</th><th>Subject</th><th>Score</th><th>Teacher comment</th></tr></thead>
+                <tbody>
+                <tr th:each="record : ${recentResults}">
+                    <td th:text="${record.student.fullName}">Student</td>
+                    <td th:text="${record.student.grade}">Grade</td>
+                    <td th:text="${record.term}">Term</td>
+                    <td th:text="${record.subject}">Subject</td>
+                    <td th:text="${record.score + '%'}">0%</td>
+                    <td th:text="${record.teacherComment}">Comment</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(recentResults)}"><td colspan="6" class="empty">No academic records yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <p class="sample-warning">Sample records are used for local portal previews.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reports &amp; analytics | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Reports &amp; analytics</small></span>
+    </a>
+    <div class="account">
+        <a class="button outline" th:href="@{/modules}">Modules</a>
+        <a class="button outline" th:href="@{/logs}">Logs</a>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">EXECUTIVE SUMMARY</p>
+        <h1>School reports and analytics</h1>
+        <p class="muted">Live totals from student, academic, fee, transport, staff and operations records.</p>
+    </section>
+    <section class="stats-grid">
+        <article class="stat-card"><span>Students</span><strong th:text="${studentCount}">0</strong></article>
+        <article class="stat-card"><span>Teachers</span><strong th:text="${teacherCount}">0</strong></article>
+        <article class="stat-card"><span>Bursars</span><strong th:text="${bursarCount}">0</strong></article>
+        <article class="stat-card"><span>Fee accounts</span><strong th:text="${feeAccountCount}">0</strong></article>
+        <article class="stat-card"><span>Payments</span><strong th:text="${paymentCount}">0</strong></article>
+        <article class="stat-card"><span>Academic records</span><strong th:text="${academicRecordCount}">0</strong></article>
+        <article class="stat-card"><span>Buses</span><strong th:text="${busCount}">0</strong></article>
+        <article class="stat-card"><span>Module records</span><strong th:text="${moduleRecordCount}">0</strong></article>
+    </section>
+</main>
+</body>
+</html>

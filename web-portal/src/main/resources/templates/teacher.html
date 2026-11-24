@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Teacher portal | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Teacher portal</small></span>
+    </a>
+    <div class="account">
+        <span th:text="${displayName}">Teacher</span>
+        <span class="role-badge">Teacher</span>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">TEACHER WORKSPACE</p>
+        <h1>Welcome, <span th:text="${displayName}">Teacher</span></h1>
+        <p class="muted">Subject: <span th:text="${subject}">Subject</span>. Review progress for your assigned subject.</p>
+    </section>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">DAILY ATTENDANCE</p><h2>Teacher check-in</h2></div></div>
+        <p><strong>Check-in:</strong> <span th:text="${checkIn != null ? #temporals.format(checkIn, 'HH:mm') : 'Not recorded'}">—</span></p>
+        <p><strong>Check-out:</strong> <span th:text="${checkOut != null ? #temporals.format(checkOut, 'HH:mm') : 'Not recorded'}">—</span></p>
+        <div class="button-row">
+            <form th:action="@{/teacher/check-in}" method="post"><button class="button primary" type="submit">Check in now</button></form>
+            <form th:action="@{/teacher/check-out}" method="post"><button class="button secondary" type="submit">Check out now</button></form>
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">ACADEMIC RECORDS</p><h2>Student progress</h2></div></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Student</th><th>Grade</th><th>Term</th><th>Subject</th><th>Score</th><th>Comment</th></tr></thead>
+                <tbody>
+                <tr th:each="record : ${records}">
+                    <td th:text="${record.student.fullName}">Student</td>
+                    <td th:text="${record.student.grade}">Grade</td>
+                    <td th:text="${record.term}">Term</td>
+                    <td th:text="${record.subject}">Subject</td>
+                    <td th:text="${record.score + '%'}">0%</td>
+                    <td th:text="${record.teacherComment}">Comment</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(records)}"><td colspan="6" class="empty">No records yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <p class="sample-warning">Academic records shown here are sample data.</p>
+</main>
+</body>
+</html>

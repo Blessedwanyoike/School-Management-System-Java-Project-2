@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parent portal | Carol Academy</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/portal}">
+        <img class="school-logo" th:src="@{/images/carol-academy-logo.jpg}" alt="Carol Academy crest">
+        <span><strong>Carol Academy</strong><small>Parent portal</small></span>
+    </a>
+    <div class="account">
+        <span>Parent access</span>
+        <span class="role-badge">Parent</span>
+        <form th:action="@{/logout}" method="post"><button class="button outline" type="submit">Sign out</button></form>
+    </div>
+</header>
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">FAMILY DASHBOARD</p>
+        <h1 th:text="${student.fullName}">Student name</h1>
+        <p class="muted">Admission number <span th:text="${student.studentCode}">ID</span> | <span th:text="${student.grade}">Grade</span></p>
+    </section>
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="stats-grid fee-grid">
+        <article class="stat-card"><span>Total fees</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.totalFees, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+        <article class="stat-card"><span>Paid</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.amountPaid, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+        <article class="stat-card balance"><span>Balance</span><strong th:text="${'KES ' + #numbers.formatDecimal(feeAccount.balance, 1, 'COMMA', 2, 'POINT')}">KES 0</strong></article>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">ACADEMICS</p><h2>Progress</h2></div></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Term</th><th>Subject</th><th>Score</th><th>Teacher comment</th></tr></thead>
+                <tbody>
+                <tr th:each="record : ${records}">
+                    <td th:text="${record.term}">Term</td>
+                    <td th:text="${record.subject}">Subject</td>
+                    <td th:text="${record.score + '%'}">0%</td>
+                    <td th:text="${record.teacherComment}">Comment</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(records)}"><td colspan="4" class="empty">No progress records yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">FEES</p><h2>Payment section</h2></div></div>
+        <div class="alert sample-warning">Local payment preview: no money is transferred.</div>
+        <form th:action="@{/parent/pay}" method="post" class="payment-form">
+            <label for="amount">Amount (KES)</label>
+            <input id="amount" name="amount" type="number" min="0.01" step="0.01"
+                   th:max="${feeAccount.balance}" required>
+            <button class="button primary" type="submit" th:disabled="${feeAccount.balance.signum() == 0}">
+                Record payment
+            </button>
+        </form>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Date</th><th>Reference</th><th>Amount</th><th>Mode</th></tr></thead>
+                <tbody>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${#temporals.format(payment.createdAt, 'dd MMM yyyy, HH:mm')}">Date</td>
+                    <td th:text="${payment.reference}">Reference</td>
+                    <td th:text="${'KES ' + #numbers.formatDecimal(payment.amount, 1, 'COMMA', 2, 'POINT')}">KES 0</td>
+                    <td>LOCAL PREVIEW</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(payments)}"><td colspan="4" class="empty">No payments recorded.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
